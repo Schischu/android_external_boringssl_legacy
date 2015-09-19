@@ -94,6 +94,16 @@ extern uint32_t OPENSSL_ia32cap_P[4];
 #endif
 
 #if defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64)
+#if defined(OPENSSL_STATIC_ARMCAP)
+static inline char CRYPTO_is_NEON_capable(void)
+{
+    return OPENSSL_STATIC_ARMCAP_ARMV7_NEON;
+}
+static inline char CRYPTO_is_NEON_functional(void)
+{
+    return OPENSSL_STATIC_ARMCAP_ARMV7_NEON && OPENSSL_STATIC_ARMCAP_ARMV7_NEON_FUNCTIONAL;
+}
+#else
 /* CRYPTO_is_NEON_capable returns true if the current CPU has a NEON unit. Note
  * that |OPENSSL_armcap_P| also exists and contains the same information in a
  * form that's easier for assembly to use. */
@@ -116,6 +126,7 @@ OPENSSL_EXPORT char CRYPTO_is_NEON_functional(void);
  * compiled with |-mfpu=neon| or if |CRYPTO_set_NEON_capable| has been called
  * with a non-zero argument. */
 OPENSSL_EXPORT void CRYPTO_set_NEON_functional(char neon_functional);
+#endif  /* OPENSSL_STATIC_ARMCAP */
 #endif  /* OPENSSL_ARM */
 
 

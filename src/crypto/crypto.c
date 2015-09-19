@@ -17,7 +17,7 @@
 #include "internal.h"
 
 
-#if !defined(OPENSSL_NO_ASM) && \
+#if !defined(OPENSSL_NO_ASM) && !defined(OPENSSL_STATIC_ARMCAP) && \
     (defined(OPENSSL_X86) || defined(OPENSSL_X86_64) || \
      defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64))
 /* x86, x86_64 and the ARMs need to record the result of a cpuid call for the
@@ -57,10 +57,18 @@ uint32_t OPENSSL_ia32cap_P[4] = {0};
 
 #include <openssl/arm_arch.h>
 
+#if defined(OPENSSL_STATIC_ARMCAP)
+enum {
+	tmp_OPENSSL_armcap_P = OPENSSL_armcap_P
+};
+#undef OPENSSL_armcap_P
+uint32_t OPENSSL_armcap_P = tmp_OPENSSL_armcap_P;
+#else
 #if defined(__ARM_NEON__)
 uint32_t OPENSSL_armcap_P = ARMV7_NEON | ARMV7_NEON_FUNCTIONAL;
 #else
 uint32_t OPENSSL_armcap_P = ARMV7_NEON_FUNCTIONAL;
+#endif
 #endif
 
 #endif

@@ -107,7 +107,16 @@
 /* OPENSSL_armcap_P contains flags describing the capabilities of the CPU and
  * is easy for assembly code to acesss. For C code, see the functions in
  * |cpu.h|. */
+#if defined(OPENSSL_STATIC_ARMCAP)
+#define OPENSSL_armcap_P ( OPENSSL_STATIC_ARMCAP_ARMV7_NEON_MASK | \
+                           OPENSSL_STATIC_ARMCAP_ARMV7_NEON_FUNCTIONAL_MASK | \
+                           OPENSSL_STATIC_ARMCAP_ARMV8_AES_MASK | \
+                           OPENSSL_STATIC_ARMCAP_ARMV8_SHA1_MASK | \
+                           OPENSSL_STATIC_ARMCAP_ARMV8_SHA256_MASK | \
+                           OPENSSL_STATIC_ARMCAP_ARMV8_PMULL_MASK)
+#else
 extern uint32_t OPENSSL_armcap_P;
+#endif
 
 #endif  /* !__ASSEMBLER__ */
 
